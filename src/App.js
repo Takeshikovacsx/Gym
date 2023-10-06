@@ -1,10 +1,6 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
-import BotonIniciarSesion from './components/BotonIniciarSesion';
-import BotonRegistrarse from './components/BotonRegistrarse';
-import ComponenteIniciarSesion from './components/BotonIniciarSesion'; // Reemplaza con el nombre correcto de tu componente de inicio de sesión
-import ComponenteRegistro from './components/Registro';
 import Login from './components/Login';
 import Registro from './components/Registro';
 import { FaDumbbell } from 'react-icons/fa';
@@ -34,6 +30,13 @@ function App() {
 
                 <h1 className='ml-4 font-bold'>Home</h1>
               </Link>
+
+              <div class="hidden lg:flex lg:gap-x-12">
+                <a href="#" class="text-sm font-semibold leading-6 text-white">Product</a>
+                <a href="#" class="text-sm font-semibold leading-6 text-white">Features</a>
+                <a href="#" class="text-sm font-semibold leading-6 text-white">Marketplace</a>
+                <a href="#" class="text-sm font-semibold leading-6 text-white">Company</a>
+                </div>
 
 
               <div className='flex'>

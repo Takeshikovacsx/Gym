@@ -4,7 +4,9 @@ function Registro() {
   // Estados para guardar los valores de los campos
   const [nombre, setNombre] = useState('');
   const [cedula, setCedula] = useState('');
+  const [nombreUsuario, setNombreUsuario] = useState('');
   const [email, setEmail] = useState('');
+  const [contrasena, setContrasena] = useState('');
   const [mensaje, setMensaje] = useState('');
   const [usuarios, setUsuarios] = useState([]); // Estado para almacenar los usuarios registrados
 
@@ -13,19 +15,25 @@ function Registro() {
     setNombre(e.target.value);
   };
 
-  const handleCedula = (e) => {
+  const handleCedulaChange = (e) => {
     setCedula(e.target.value);
+  };
+
+  const handleNombreUsuarioChange = (e) => {
+    setNombreUsuario(e.target.value);
   };
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
 
+  const handleContrasenaChange = (e) => {
+    setContrasena(e.target.value);
+  };
 
   const handleMensajeChange = (e) => {
     setMensaje(e.target.value);
   };
-
 
   // Manejador de evento para el envío del formulario
   const handleSubmit = (e) => {
@@ -35,7 +43,9 @@ function Registro() {
     const nuevoUsuario = {
       nombre,
       cedula,
+      nombreUsuario,
       email,
+      contrasena,
       mensaje,
     };
 
@@ -44,8 +54,10 @@ function Registro() {
 
     // Limpia los campos después del envío
     setNombre('');
-
+    setCedula('');
+    setNombreUsuario('');
     setEmail('');
+    setContrasena('');
     setMensaje('');
   };
 
@@ -76,16 +88,31 @@ function Registro() {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="Cedula" className="block text-sm font-medium leading-6 text-gray-900">
-                Cedula
+              <label htmlFor="cedula" className="block text-sm font-medium leading-6 text-gray-900">
+                Cédula
               </label>
               <input
                 type="text"
                 id="cedula"
                 className="mt-1 p-2 w-full border rounded-md"
-                placeholder="Number"
+                placeholder="Número de cédula"
                 value={cedula}
-                onChange={handleCedula}
+                onChange={handleCedulaChange}
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="nombreUsuario" className="block text-sm font-medium leading-6 text-gray-900">
+                Nombre de Usuario
+              </label>
+              <input
+                type="text"
+                id="nombreUsuario"
+                className="mt-1 p-2 w-full border rounded-md"
+                placeholder="Nombre de usuario"
+                value={nombreUsuario}
+                onChange={handleNombreUsuarioChange}
                 required
               />
             </div>
@@ -106,8 +133,23 @@ function Registro() {
             </div>
 
             <div className="mb-4">
+              <label htmlFor="contrasena" className="block text-sm font-medium leading-6 text-gray-900">
+                Contraseña
+              </label>
+              <input
+                type="password"
+                id="contrasena"
+                className="mt-1 p-2 w-full border rounded-md"
+                placeholder="Contraseña"
+                value={contrasena}
+                onChange={handleContrasenaChange}
+                required
+              />
+            </div>
+
+            <div className="mb-4">
               <label htmlFor="mensaje" className="block text-sm font-medium leading-6 text-gray-900">
-                Proposito De Inicio
+                Propósito de Inicio
               </label>
               <textarea
                 id="mensaje"
@@ -137,7 +179,7 @@ function Registro() {
             <ul className="list-disc list-inside">
               {usuarios.map((usuario, index) => (
                 <li key={index}>
-                  Nombre: {usuario.nombre},Cedula: {usuario.cedula}, Email: {usuario.email}, Mensaje: {usuario.mensaje}
+                  Nombre: {usuario.nombre}, Cédula: {usuario.cedula}, Nombre de Usuario: {usuario.nombreUsuario}, Email: {usuario.email}, Contraseña: {usuario.contrasena}, Propósito de Inicio: {usuario.mensaje}
                 </li>
               ))}
             </ul>
