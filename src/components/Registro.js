@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 function Registro() {
   // Estados para guardar los valores de los campos
   const [nombre, setNombre] = useState('');
+  const [cedula, setCedula] = useState('');
   const [email, setEmail] = useState('');
   const [mensaje, setMensaje] = useState('');
   const [usuarios, setUsuarios] = useState([]); // Estado para almacenar los usuarios registrados
@@ -12,13 +13,19 @@ function Registro() {
     setNombre(e.target.value);
   };
 
+  const handleCedula = (e) => {
+    setCedula(e.target.value);
+  };
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
 
+
   const handleMensajeChange = (e) => {
     setMensaje(e.target.value);
   };
+
 
   // Manejador de evento para el envío del formulario
   const handleSubmit = (e) => {
@@ -27,6 +34,7 @@ function Registro() {
     // Crear un nuevo usuario con los datos ingresados
     const nuevoUsuario = {
       nombre,
+      cedula,
       email,
       mensaje,
     };
@@ -36,6 +44,7 @@ function Registro() {
 
     // Limpia los campos después del envío
     setNombre('');
+
     setEmail('');
     setMensaje('');
   };
@@ -50,7 +59,7 @@ function Registro() {
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Registration Form</h2>
 
           <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit}>
-            
+
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
               <label htmlFor="nombre" className="block text-sm font-medium leading-6 text-gray-900">
                 Nombre
@@ -62,6 +71,21 @@ function Registro() {
                 placeholder="Nombre completo"
                 value={nombre}
                 onChange={handleNombreChange}
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="Cedula" className="block text-sm font-medium leading-6 text-gray-900">
+                Cedula
+              </label>
+              <input
+                type="text"
+                id="cedula"
+                className="mt-1 p-2 w-full border rounded-md"
+                placeholder="Number"
+                value={cedula}
+                onChange={handleCedula}
                 required
               />
             </div>
@@ -113,7 +137,7 @@ function Registro() {
             <ul className="list-disc list-inside">
               {usuarios.map((usuario, index) => (
                 <li key={index}>
-                  Nombre: {usuario.nombre}, Email: {usuario.email}, Mensaje: {usuario.mensaje}
+                  Nombre: {usuario.nombre},Cedula: {usuario.cedula}, Email: {usuario.email}, Mensaje: {usuario.mensaje}
                 </li>
               ))}
             </ul>
