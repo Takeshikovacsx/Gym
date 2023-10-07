@@ -83,13 +83,13 @@ function Registro({ usuarios, setUsuarios }) {
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
               <label htmlFor="nombre" className="block text-sm font-medium leading-6 text-gray-900">
-                Nombre
+                Name
               </label>
               <input
                 type="text"
                 id="nombre"
                 className="mt-1 p-2 w-full border rounded-md"
-                placeholder="Nombre completo"
+                placeholder="Full Name"
                 value={nombre}
                 onChange={handleNombreChange}
                 required
@@ -114,13 +114,13 @@ function Registro({ usuarios, setUsuarios }) {
 
             <div className="mb-4">
               <label htmlFor="nombreUsuario" className="block text-sm font-medium leading-6 text-gray-900">
-                Nombre de Usuario
+                Nick Name
               </label>
               <input
                 type="text"
                 id="nombreUsuario"
                 className="mt-1 p-2 w-full border rounded-md"
-                placeholder="Nombre de usuario"
+                placeholder="Nick Name"
                 value={nombreUsuario}
                 onChange={handleNombreUsuarioChange}
                 required
@@ -144,13 +144,13 @@ function Registro({ usuarios, setUsuarios }) {
 
             <div className="mb-4">
               <label htmlFor="contrasena" className="block text-sm font-medium leading-6 text-gray-900">
-                Contraseña
+                Password
               </label>
               <input
                 type="password"
                 id="contrasena"
                 className="mt-1 p-2 w-full border rounded-md"
-                placeholder="Contraseña"
+                placeholder="Password"
                 value={contrasena}
                 onChange={handleContrasenaChange}
                 required
@@ -177,7 +177,7 @@ function Registro({ usuarios, setUsuarios }) {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Enviar
+                Submit
               </button>
             </div>
 
