@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import Registro from './Registro'
+
+
 
 function Login( { usuarios } ) {
 
@@ -13,6 +14,7 @@ function Login( { usuarios } ) {
 
   const handleContrasenaChange = (e) => {
     setContrasena(e.target.value);
+    
   };
 
   const handleLogin = (e) => {
@@ -22,10 +24,12 @@ function Login( { usuarios } ) {
 
     if (usuarioEncontrado) {
       alert('Inicio de sesión exitoso');
-      navigate('/Login');
+   
+      
     } else {
       alert('Inicio de sesión fallido');
     }
+  
   };
 
 

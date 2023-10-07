@@ -88,7 +88,7 @@ Ya sea que estés buscando aumentar tu fuerza, mejorar tu resistencia, perder pe
           <Route path='/' element={App} />
           <Route path='/Login' element={<Login usuarios={usuarios} />} />
           <Route path='/Registro' element={<Registro usuarios={usuarios} setUsuarios={setUsuarios} />} />
-          <Route path='/Ulogeado' element= {<Ulogueado />} />
+          <Route path='/Ul' element= {<Ulogueado />} />
         </Routes>
 
 

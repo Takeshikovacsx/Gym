@@ -11,7 +11,6 @@ function Registro({ usuarios, setUsuarios }) {
   const [contrasena, setContrasena] = useState('');
   const [mensaje, setMensaje] = useState('');
   const navigate = useNavigate(); // Usar useNavigate en lugar de useHistory
-  const [usuarioRegistrado, setUsuarioRegistrado] = useState(false);
 
    // Estado para almacenar los usuarios registrados
 
