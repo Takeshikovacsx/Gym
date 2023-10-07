@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Registro() {
   // Estados para guardar los valores de los campos
@@ -8,7 +9,11 @@ function Registro() {
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [mensaje, setMensaje] = useState('');
-  const [usuarios, setUsuarios] = useState([]); // Estado para almacenar los usuarios registrados
+  const [usuarios, setUsuarios] = useState([]);
+  const navigate = useNavigate(); // Usar useNavigate en lugar de useHistory
+  const [usuarioRegistrado, setUsuarioRegistrado] = useState(false);
+
+   // Estado para almacenar los usuarios registrados
 
   // Manejadores de eventos para actualizar los estados cuando los campos cambian
   const handleNombreChange = (e) => {
@@ -59,6 +64,10 @@ function Registro() {
     setEmail('');
     setContrasena('');
     setMensaje('');
+
+     // Indica que el usuario está registrado y redirige a Login
+     setUsuarioRegistrado(true);
+     navigate('/Login'); // Utiliza navigate en lugar de history.push
   };
 
   return (
