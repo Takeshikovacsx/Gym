@@ -21,9 +21,10 @@ function Login( { usuarios } ) {
     const usuarioEncontrado = usuarios.find((usuario) => usuario.email === email && usuario.contrasena === contrasena);
 
     if (usuarioEncontrado) {
-      console.log('Inicio de sesión exitoso');
+      alert('Inicio de sesión exitoso');
+      navigate('/Login');
     } else {
-      console.log('Inicio de sesión fallido');
+      alert('Inicio de sesión fallido');
     }
   };
 
