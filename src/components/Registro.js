@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Registro() {
+
+function Registro({ usuarios, setUsuarios }) {
   // Estados para guardar los valores de los campos
   const [nombre, setNombre] = useState('');
   const [cedula, setCedula] = useState('');
@@ -9,7 +10,6 @@ function Registro() {
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [mensaje, setMensaje] = useState('');
-  const [usuarios, setUsuarios] = useState([]);
   const navigate = useNavigate(); // Usar useNavigate en lugar de useHistory
   const [usuarioRegistrado, setUsuarioRegistrado] = useState(false);
 
@@ -44,18 +44,19 @@ function Registro() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Crear un nuevo usuario con los datos ingresados
-    const nuevoUsuario = {
-      nombre,
-      cedula,
-      nombreUsuario,
-      email,
-      contrasena,
-      mensaje,
-    };
+   // Crear un nuevo usuario con los datos ingresados
+   const nuevoUsuario = {
+    nombre,
+    cedula,
+    nombreUsuario,
+    email,
+    contrasena,
+    mensaje,
+  };
 
-    // Agregar el nuevo usuario a la lista de usuarios
-    setUsuarios([...usuarios, nuevoUsuario]);
+  // Agregar el nuevo usuario a la lista de usuarios utilizando la función 'setUsuarios' pasada como prop
+  setUsuarios([...usuarios, nuevoUsuario]);
+
 
     // Limpia los campos después del envío
     setNombre('');
@@ -66,7 +67,7 @@ function Registro() {
     setMensaje('');
 
      // Indica que el usuario está registrado y redirige a Login
-     setUsuarioRegistrado(true);
+  
      navigate('/Login'); // Utiliza navigate en lugar de history.push
   };
 
@@ -101,10 +102,11 @@ function Registro() {
                 Cédula
               </label>
               <input
-                type="text"
+                type="number-pad"
                 id="cedula"
                 className="mt-1 p-2 w-full border rounded-md"
                 placeholder="Número de cédula"
+                maxLength={10}
                 value={cedula}
                 onChange={handleCedulaChange}
                 required
@@ -182,17 +184,8 @@ function Registro() {
 
           </form>
 
-          {/* Mostrar la lista de usuarios registrados */}
-          <div className="mt-6">
-            <h3 className="text-xl font-semibold">Usuarios Registrados:</h3>
-            <ul className="list-disc list-inside">
-              {usuarios.map((usuario, index) => (
-                <li key={index}>
-                  Nombre: {usuario.nombre}, Cédula: {usuario.cedula}, Nombre de Usuario: {usuario.nombreUsuario}, Email: {usuario.email}, Contraseña: {usuario.contrasena}, Propósito de Inicio: {usuario.mensaje}
-                </li>
-              ))}
-            </ul>
-          </div>
+       
+          
         </div>
       </div>
     </>

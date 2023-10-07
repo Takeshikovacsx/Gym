@@ -1,9 +1,39 @@
-import React from 'react'
+import React, { useState } from 'react';
+import Registro from './Registro'
 
-function Login() {
+function Login( { usuarios } ) {
+
+
+  const [email, setEmail] = useState('');
+  const [contrasena, setContrasena] = useState('');
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleContrasenaChange = (e) => {
+    setContrasena(e.target.value);
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    const usuarioEncontrado = usuarios.find((usuario) => usuario.email === email && usuario.contrasena === contrasena);
+
+    if (usuarioEncontrado) {
+      console.log('Inicio de sesión exitoso');
+    } else {
+      console.log('Inicio de sesión fallido');
+    }
+  };
+
+
 
   
+ // Crear un nuevo usuario con los datos ingresados
+ 
 
+// Agregar el nuevo usuario a la lista de usuarios
 
   return (
 
@@ -20,18 +50,14 @@ function Login() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" action="#" method="POST">
+        <form className="space-y-6" action="#" method="POST" onSubmit={handleLogin}>
           <div>
             <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
               Email address
             </label>
             <div className="mt-2">
               <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
+                type="email" id="email" value={email} onChange={handleEmailChange} required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-center"
               />
             </div>
@@ -50,11 +76,7 @@ function Login() {
             </div>
             <div className="mt-2">
               <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
+                type="password" id="contrasena" value={contrasena} onChange={handleContrasenaChange} required 
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-center"
               />
             </div>
@@ -67,6 +89,7 @@ function Login() {
             >
               Sign in
             </button>
+   
           </div>
         </form>
 
@@ -77,7 +100,9 @@ function Login() {
           </a>
         </p>
       </div>
+     
     </div>
+
 
   )
 }

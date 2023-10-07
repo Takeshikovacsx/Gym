@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import Login from './components/Login';
 import Registro from './components/Registro';
+import Ulogueado from './components/Ulog'
 import { FaDumbbell } from 'react-icons/fa';
 
 
@@ -11,6 +12,9 @@ import { FaDumbbell } from 'react-icons/fa';
 // Reemplaza con el nombre correcto de tu componente de registro
 
 function App() {
+
+  const [usuarios, setUsuarios] = useState([]);
+
   const location = useLocation();
   const Home = location.pathname === '/';
 
@@ -63,7 +67,7 @@ function App() {
         {Home && (
           <section className="bg-blue-500 py-16 text-white">
             <div className="container mx-auto text-center">
-              <h1 className="text-4xl font-bold mb-4">¡Bienvenido a nuestro Gimnasio!</h1>
+              <h1 className="text-4xl font-bold mb-4">¡Welcome to Vitality Gym!</h1>
               <p className="text-lg mb-8">¡Bienvenido al Gimnasio Vitality!
 
 En Vitality, nuestra pasión es ayudarte a alcanzar tus objetivos de bienestar y a llevar un estilo de vida saludable. Nos enorgullece ser tu socio en este emocionante viaje hacia la salud y el bienestar.
@@ -76,13 +80,15 @@ Ya sea que estés buscando aumentar tu fuerza, mejorar tu resistencia, perder pe
               </button>
             </div>
           </section>
+          
         )}
 
 
         <Routes>
           <Route path='/' element={App} />
-          <Route path='/Login' element={<Login />} />
-          <Route path='/Registro' element={<Registro />} />
+          <Route path='/Login' element={<Login usuarios={usuarios} />} />
+          <Route path='/Registro' element={<Registro usuarios={usuarios} setUsuarios={setUsuarios} />} />
+          <Route path='/Ulogeado' element= {<Ulogueado />} />
         </Routes>
 
 
