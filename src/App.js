@@ -5,7 +5,7 @@ import Login from './components/Login';
 import Registro from './components/Registro';
 import Ulogueado from './components/Ulog'
 import { FaDumbbell } from 'react-icons/fa';
-
+import firebase,{ FirebaseContext } from './firebase'
 
 
 
@@ -13,93 +13,101 @@ import { FaDumbbell } from 'react-icons/fa';
 
 function App() {
 
-  const [usuarios, setUsuarios] = useState([]);
 
   const location = useLocation();
   const Home = location.pathname === '/';
 
   return (
 
-    <div>
-      <div className="bg-gray-100 min-h-screen">
+    <FirebaseContext.Provider
 
-        <header className="bg-gray-800 py-4">
-          <div className="container mx-auto">
-            <div className="flex justify-between items-center ml-20">
+    value={{
+      firebase
+      }}>
 
-              <Link className="text-2xl text-white px-4 py-2 rounded-md  hover:opacity-70 flex items-center" to='/'>
-                <FaDumbbell/>
+      <div>
+        <div className="bg-gray-100 min-h-screen">
+
+          <header className="bg-gray-800 py-4">
+            <div className="container mx-auto">
+              <div className="flex justify-between items-center ml-20">
+
+                <Link className="text-2xl text-white px-4 py-2 rounded-md  hover:opacity-70 flex items-center" to='/'>
+                  <FaDumbbell />
 
 
 
-                <h1 className='ml-4 font-bold'>Home</h1>
-              </Link>
+                  <h1 className='ml-4 font-bold'>Home</h1>
+                </Link>
 
-              <div class="hidden lg:flex lg:gap-x-12">
-                <a href="#" class="text-sm font-semibold leading-6 text-white">Product</a>
-                <a href="#" class="text-sm font-semibold leading-6 text-white">Features</a>
-                <a href="#" class="text-sm font-semibold leading-6 text-white">Marketplace</a>
-                <a href="#" class="text-sm font-semibold leading-6 text-white">Company</a>
+                <div class="hidden lg:flex lg:gap-x-12">
+                  <a href="#" class="text-sm font-semibold leading-6 text-white">Product</a>
+                  <a href="#" class="text-sm font-semibold leading-6 text-white">Features</a>
+                  <a href="#" class="text-sm font-semibold leading-6 text-white">Marketplace</a>
+                  <a href="#" class="text-sm font-semibold leading-6 text-white">Company</a>
                 </div>
 
 
-              <div className='flex'>
+                <div className='flex'>
 
-                <Link to="/Login" className="bg-indigo-500 hover:bg-indigo-700 text-white  px-4 py-2 rounded-md flex items-center">
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
-                  </svg>
-                  Login
-                </Link>
+                  <Link to="/Login" className="bg-indigo-500 hover:bg-indigo-700 text-white  px-4 py-2 rounded-md flex items-center">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
+                    </svg>
+                    Login
+                  </Link>
 
-                <Link to="/Registro" className="bg-gray-700 hover:bg-gray-900 text-white  py-2 px-4 rounded-md opacity-75 hover:opacity-100 ml-4 flex items-center">
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"></path>
-                  </svg>
-                  Register
-                </Link>
+                  <Link to="/Registro" className="bg-gray-700 hover:bg-gray-900 text-white  py-2 px-4 rounded-md opacity-75 hover:opacity-100 ml-4 flex items-center">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"></path>
+                    </svg>
+                    Register
+                  </Link>
 
+                </div>
               </div>
             </div>
-          </div>
-        </header>
+          </header>
 
-        {Home && (
-          <section className="bg-blue-500 py-16 text-white">
-            <div className="container mx-auto text-center">
-              <h1 className="text-4xl font-bold mb-4">¡Welcome to Vitality Gym!</h1>
-              <p className="text-lg mb-8">¡Bienvenido al Gimnasio Vitality!
+          {Home && (
+            <section className="bg-blue-500 py-16 text-white">
+              <div className="container mx-auto text-center">
+                <h1 className="text-4xl font-bold mb-4">¡Welcome to Vitality Gym!</h1>
+                <p className="text-lg mb-8">¡Bienvenido al Gimnasio Vitality!
 
-En Vitality, nuestra pasión es ayudarte a alcanzar tus objetivos de bienestar y a llevar un estilo de vida saludable. Nos enorgullece ser tu socio en este emocionante viaje hacia la salud y el bienestar.
+                  En Vitality, nuestra pasión es ayudarte a alcanzar tus objetivos de bienestar y a llevar un estilo de vida saludable. Nos enorgullece ser tu socio en este emocionante viaje hacia la salud y el bienestar.
 
-Nuestro gimnasio está diseñado para ofrecerte un espacio inspirador donde puedas desafiar tus límites, superar tus metas y transformar tu cuerpo y mente. Ofrecemos una amplia variedad de equipos de vanguardia, clases dirigidas por expertos y un equipo de entrenadores profesionales que están comprometidos con tu éxito.
+                  Nuestro gimnasio está diseñado para ofrecerte un espacio inspirador donde puedas desafiar tus límites, superar tus metas y transformar tu cuerpo y mente. Ofrecemos una amplia variedad de equipos de vanguardia, clases dirigidas por expertos y un equipo de entrenadores profesionales que están comprometidos con tu éxito.
 
-Ya sea que estés buscando aumentar tu fuerza, mejorar tu resistencia, perder peso o simplemente mantener un estilo de vida activo, en Vitality encontrarás todo lo que necesitas. Nuestro ambiente acogedor y motivador te inspirará a dar lo mejor de ti en cada entrenamiento.</p>
-              <button className="bg-white text-blue-500 hover:bg-blue-100 text-lg font-semibold py-2 px-6 rounded-full transition duration-300 ease-in-out">
-                Empezar
-              </button>
-            </div>
-          </section>
-          
-        )}
+                  Ya sea que estés buscando aumentar tu fuerza, mejorar tu resistencia, perder peso o simplemente mantener un estilo de vida activo, en Vitality encontrarás todo lo que necesitas. Nuestro ambiente acogedor y motivador te inspirará a dar lo mejor de ti en cada entrenamiento.</p>
+                <button className="bg-white text-blue-500 hover:bg-blue-100 text-lg font-semibold py-2 px-6 rounded-full transition duration-300 ease-in-out">
+                  Empezar
+                </button>
+              </div>
+            </section>
+
+          )}
 
 
-        <Routes>
-          <Route path='/' element={App} />
-          <Route path='/Login' element={<Login usuarios={usuarios} />} />
-          <Route path='/Registro' element={<Registro usuarios={usuarios} setUsuarios={setUsuarios} />} />
-          <Route path='/Ul' element= {<Ulogueado />} />
-        </Routes>
+          <Routes>
+            <Route path='/' element={App} />
+            <Route path='/Login' element={<Login />} />
+            <Route path='/Registro' element={<Registro />} />
+            <Route path='/Ul' element={<Ulogueado />} />
+          </Routes>
+
+
+
+
+        </div>
 
 
 
 
       </div>
 
+    </FirebaseContext.Provider>
 
-
-
-    </div>
   );
 }
 
