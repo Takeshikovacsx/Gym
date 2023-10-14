@@ -52,8 +52,8 @@ function Routine() {
 
     return (
         <>
-            <div className='flex ' >
-                <div className="flex   bg-gray-800 flex-col justify-center px-6  lg:pl-20   border border-gray-800  border-4 p-4 ">
+            <div className='flex  ' >
+                <div className="flex  ml-10 mt-5 mb-5 mr-10  bg-gray-800 flex-col justify-center px-6 py-10    border border-gray-800  border-4 p-4 rounded-lg p-4">
                     <div className="  sm:max-w-sm">
 
                         <h2 className=" text-center text-2xl font-bold leading-9 tracking-tight text-gray-200">Ingresar Nueva Rutina</h2>
@@ -212,7 +212,7 @@ function Routine() {
                 </div>
 
 
-                <div>Info</div>
+                <div className=''>Info</div>
 
 
 
