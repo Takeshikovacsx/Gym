@@ -3,9 +3,10 @@ import { Routes, Route, useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import Login from './components/Login';
 import Registro from './components/Registro';
-import Ulogueado from './components/Ulog'
+import Ulogueado from './components/Ulog';
+import Routine from './components/Routine';
 import { FaDumbbell } from 'react-icons/fa';
-import firebase,{ FirebaseContext } from './firebase'
+import firebase, { FirebaseContext } from './firebase'
 
 
 
@@ -21,8 +22,8 @@ function App() {
 
     <FirebaseContext.Provider
 
-    value={{
-      firebase
+      value={{
+        firebase
       }}>
 
       <div>
@@ -41,8 +42,10 @@ function App() {
                 </Link>
 
                 <div class="hidden lg:flex lg:gap-x-12">
-                  <a href="#" class="text-sm font-semibold leading-6 text-white">Product</a>
-                  <a href="#" class="text-sm font-semibold leading-6 text-white">Features</a>
+                  <Link to="/Rout" className='text-sm font-semibold leading-6 text-white'>
+                  Routines
+                  </Link>
+                  <a href="#" class="text-sm font-semibold leading-6 text-white">Schedules</a>
                   <a href="#" class="text-sm font-semibold leading-6 text-white">Marketplace</a>
                   <a href="#" class="text-sm font-semibold leading-6 text-white">Company</a>
                 </div>
@@ -68,6 +71,7 @@ function App() {
               </div>
             </div>
           </header>
+         
 
           {Home && (
             <section className="bg-blue-500 py-16 text-white">
@@ -86,11 +90,13 @@ function App() {
               </div>
             </section>
 
+
           )}
 
 
           <Routes>
             <Route path='/' element={App} />
+            <Route path='/Rout' element={<Routine/>} />
             <Route path='/Login' element={<Login />} />
             <Route path='/Registro' element={<Registro />} />
             <Route path='/Ul' element={<Ulogueado />} />
@@ -105,6 +111,11 @@ function App() {
 
 
       </div>
+      <footer className="bg-gray-800 py-10 text-white ">
+            <div className="container mx-auto text-center">
+              <p>&copy; 2023 Vitality Gym. Todos los derechos reservados.</p>
+            </div>
+          </footer>
 
     </FirebaseContext.Provider>
 
