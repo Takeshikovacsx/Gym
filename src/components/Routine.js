@@ -1,208 +1,203 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FirebaseContext } from '../firebase'
+import { FirebaseContext } from '../firebase';
+import FileUploader from 'react-firebase-file-uploader';
 import { FaDumbbell } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 function Routine() {
-
     const { firebase } = useContext(FirebaseContext);
+    const [Subiendo, setSubiendo] = useState(false);
+    const [progreso, setProgreso] = useState(0);
+    const [urlImagen, setUrlImagen] = useState('');
+
+    const navigate = useNavigate();
+
     const formik = useFormik({
         initialValues: {
-            nombre: '',
-            cedula: '',
-            nombreUsuario: '',
-            email: '',
-            contrasena: '',
-            mensaje: ''
+            nombreRutina: '',
+            tipoEjercicio: '',
+            duracionRutina: '',
+            descripcion: '',
+            imagen: '',
         },
-
-
         validationSchema: Yup.object({
-            nombre: Yup.string()
-                .min(10, 'El nombre de usuario debe tener al menos 10 letras')
-                .required('El campo de nombre es requerido'),
-            cedula: Yup.number()
-                .test('len', 'El campo debe tener 10 números', val => val && val.toString().length === 10)
-                .required('El campo de cédula es requerido'),
-            nombreUsuario: Yup.string()
-                .min(5, 'El nombre de usuario debe tener al menos 5 letras')
-                .required('El campo de nombre de usuario es requerido'),
-            email: Yup.string()
-                .email('Correo electrónico no válido')
-                .required('El campo de email es requerido'),
-            contrasena: Yup.string()
-                .min(10, 'La contraseña debe tener al menos 10 caracteres')
-                .required('El campo de contraseña es requerido'),
-
+            nombreRutina: Yup.string()
+                .min(5, 'El nombre de la rutina debe tener al menos 5 caracteres')
+                .required('El campo de nombre de rutina es requerido'),
+            tipoEjercicio: Yup.string()
+                .required('El tipo de ejercicio es requerido'),
+            duracionRutina: Yup.number()
+                .required('La duración de la rutina es requerida'),
+            descripcion: Yup.string(),
         }),
-        onSubmit: reg => {
+        onSubmit: async (rutina) => {
             try {
-                console.log(reg);
-                firebase.db.collection('Rutinas').add(reg)
-                alert('Se ha registrado exitosamente')
+                rutina.existencia = true;
+                rutina.imagen = urlImagen;
+                console.log(rutina);
+                await firebase.db.collection('Rutinas').add(rutina);
+                alert('Rutina de ejercicio registrada exitosamente');
                 formik.resetForm();
-
-
+                navigate('/');
             } catch (e) {
                 console.log(e);
             }
-        }
+        },
     });
+
+    const handleUploadStart = () => {
+        setProgreso(0);
+        setSubiendo(true);
+    }
+
+    const handleUploadError = (error) => {
+        setSubiendo(false);
+        console.log(error);
+    }
+
+    const handleUploadSuccess = async (nombreImagen) => {
+        setSubiendo(false);
+        setProgreso(100);
+
+        // Manejo de imagen
+        const urlImagen = await firebase
+            .storage
+            .ref("Imgrutinas")
+            .child(nombreImagen)
+            .getDownloadURL();
+
+        setUrlImagen(urlImagen);
+    }
+
+    const handleProgress = (progreso) => {
+        setProgreso(progreso);
+        console.log(progreso);
+    }
 
     return (
         <>
-            <div className='flex  ' >
-                <div className="flex  ml-10 mt-5 mb-5 mr-10  bg-gray-800 flex-col justify-center px-6 py-10    border border-gray-800  border-4 p-4 rounded-lg p-4">
-                    <div className="  sm:max-w-sm">
-
-                        <h2 className=" text-center text-2xl font-bold leading-9 tracking-tight text-gray-200">Ingresar Nueva Rutina</h2>
-
+            <div className='flex'>
+                <div className="flex ml-5 mt-5 mb-5 mr-10 bg-gray-800 flex-col justify-center px-6 py-10 border border-gray-800 border-4 p-4 rounded-lg p-4">
+                    <div className="sm:max-w-sm">
+                        <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-200">Registrar Rutina de Ejercicio</h2>
                         <form onSubmit={formik.handleSubmit} className="space-y-6" action="#">
-
-                            <div className="mt-10 ">
-                                <label htmlFor="nombre" className="block text-sm font-medium leading-6 text-white">
-                                    Nombre
+                            <div className="mt-10">
+                                <label htmlFor="nombreRutina" className="block text-sm font-medium leading-6 text-white">
+                                    Nombre de la Rutina
                                 </label>
                                 <input
                                     type="text"
-                                    id="nombre"
-                                    name="nombre"
+                                    id="nombreRutina"
+                                    name="nombreRutina"
                                     className="mt-1 p-2 w-full border rounded-md"
-                                    placeholder="Nombre completo"
-                                    value={formik.values.nombre}
+                                    placeholder="Nombre de la rutina"
+                                    value={formik.values.nombreRutina}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     required
                                 />
                             </div>
-                            {formik.touched.nombre && formik.errors.nombre ? (
+                            {formik.touched.nombreRutina && formik.errors.nombreRutina ? (
                                 <div>
-                                    <p>Ocurrió un error</p>
-                                    <p>{formik.errors.nombre}</p>
+                                    <p>{formik.errors.nombreRutina}</p>
                                 </div>
                             ) : null}
-
                             <div className="mb-4">
-                                <label htmlFor="cedula" className="block text-sm font-medium leading-6 text-white">
-                                    Cédula
+                                <label htmlFor="tipoEjercicio" className="block text-sm font-medium leading-6 text-white">
+                                    Tipo de Ejercicio
+                                </label>
+                                <input
+                                    type="text"
+                                    id="tipoEjercicio"
+                                    name="tipoEjercicio"
+                                    className="mt-1 p-2 w-full border rounded-md"
+                                    placeholder="Tipo de ejercicio"
+                                    value={formik.values.tipoEjercicio}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    required
+                                />
+                            </div>
+                            {formik.touched.tipoEjercicio && formik.errors.tipoEjercicio ? (
+                                <div>
+                                    <p>{formik.errors.tipoEjercicio}</p>
+                                </div>
+                            ) : null}
+                            <div className="mb-4">
+                                <label htmlFor="duracionRutina" className="block text-sm font-medium leading-6 text-white">
+                                    Duración de la Rutina (en minutos)
                                 </label>
                                 <input
                                     type="number"
-                                    id="cedula"
-                                    name="cedula"
+                                    id="duracionRutina"
+                                    name="duracionRutina"
                                     className="mt-1 p-2 w-full border rounded-md"
-                                    placeholder="Número de cédula"
-                                    maxLength={10}
-                                    value={formik.values.cedula}
+                                    placeholder="Duración en minutos"
+                                    value={formik.values.duracionRutina}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     required
                                 />
                             </div>
-                            {formik.touched.cedula && formik.errors.cedula ? (
+                            {formik.touched.duracionRutina && formik.errors.duracionRutina ? (
                                 <div>
-                                    <p>Ocurrió un error</p>
-                                    <p>{formik.errors.cedula}</p>
+                                    <p>{formik.errors.duracionRutina}</p>
                                 </div>
                             ) : null}
-
                             <div className="mb-4">
-                                <label htmlFor="nombreUsuario" className="block text-sm font-medium leading-6 text-white">
-                                    Nick Name
+                                <label htmlFor="imagen" className="block text-sm font-medium leading-6 text-white">
+                                    Imagen
                                 </label>
-                                <input
-                                    type="text"
-                                    id="nombreUsuario"
-                                    name="nombreUsuario"
-                                    className="mt-1 p-2 w-full border rounded-md"
-                                    placeholder="Nick Name"
-                                    value={formik.values.nombreUsuario}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    required
+                                <FileUploader
+                                    accept="image/*"
+                                    id="imagen"
+                                    name="imagen"
+                                    randomizeFilename
+                                    storageRef={firebase.storage.ref("Imgrutinas")}
+                                    onUploadStart={handleUploadStart}
+                                    onUploadError={handleUploadError}
+                                    onUploadSuccess={handleUploadSuccess}
+                                    onProgress={handleProgress}
                                 />
                             </div>
-                            {formik.touched.nombreUsuario && formik.errors.nombreUsuario ? (
-                                <div>
-                                    <p>Ocurrió un error</p>
-                                    <p>{formik.errors.nombreUsuario}</p>
-                                </div>
-                            ) : null}
-
                             <div className="mb-4">
-                                <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
-                                    Correo Electrónico
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    className="mt-1 p-2 w-full border rounded-md"
-                                    placeholder="correo@example.com"
-                                    value={formik.values.email}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    required
-                                />
+                                {Subiendo && (
+                                    <div>
+                                        <p>Subiendo: {progreso}%</p>
+                                    </div>
+                                )}
+                                {urlImagen && (
+                                    <div>
+                                        <p>Imagen subida con éxito</p>
+                                    </div>
+                                )}
                             </div>
-                            {formik.touched.email && formik.errors.email ? (
-                                <div>
-                                    <p>Ocurrió un error</p>
-                                    <p>{formik.errors.email}</p>
-                                </div>
-                            ) : null}
-
                             <div className="mb-4">
-                                <label htmlFor="contrasena" className="block text-sm font-medium leading-6 text-white">
-                                    Contraseña
-                                </label>
-                                <input
-                                    type="password"
-                                    id="contrasena"
-                                    name="contrasena"
-                                    className="mt-1 p-2 w-full border rounded-md"
-                                    placeholder="Contraseña"
-                                    value={formik.values.contrasena}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    required
-                                />
-                            </div>
-                            {formik.touched.contrasena && formik.errors.contrasena ? (
-                                <div>
-                                    <p>Ocurrió un error</p>
-                                    <p>{formik.errors.contrasena}</p>
-                                </div>
-                            ) : null}
-
-                            <div className="mb-4">
-                                <label htmlFor="mensaje" className="block text-sm font-medium leading-6 text-white">
-                                    Propósito de Registro
+                                <label htmlFor="descripcion" className="block text-sm font-medium leading-6 text-white">
+                                    Descripción de la Rutina
                                 </label>
                                 <textarea
-                                    id="mensaje"
-                                    name="mensaje"
+                                    id="descripcion"
+                                    name="descripcion"
                                     className="mt-1 p-2 w-full border rounded-md"
                                     rows="4"
-                                    placeholder="Escribe tu mensaje aquí"
-                                    value={formik.values.mensaje}
+                                    placeholder="Descripción de la rutina"
+                                    value={formik.values.descripcion}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    required
-                                ></textarea>
+                                />
                             </div>
-                            {formik.touched.mensaje && formik.errors.mensaje ? (
+                            {formik.touched.descripcion && formik.errors.descripcion ? (
                                 <div>
-                                    <p>Ocurrió un error</p>
-                                    <p>{formik.errors.mensaje}</p>
+                                    <p>{formik.errors.descripcion}</p>
                                 </div>
                             ) : null}
-
                             <div className="text-center">
                                 <button
                                     type="submit"
-                                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover-bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 >
                                     Enviar
                                 </button>
@@ -210,17 +205,10 @@ function Routine() {
                         </form>
                     </div>
                 </div>
-
-
                 <div className=''>Info</div>
-
-
-
-
-
             </div>
         </>
     );
 }
 
-export default Routine
+export default Routine;
