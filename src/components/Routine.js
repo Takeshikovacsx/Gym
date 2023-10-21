@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { FirebaseContext } from '../firebase';
@@ -11,8 +11,19 @@ function Routine() {
     const [Subiendo, setSubiendo] = useState(false);
     const [progreso, setProgreso] = useState(0);
     const [urlImagen, setUrlImagen] = useState('');
+    const [rutinas, setRutinas] = useState([]);
 
     const navigate = useNavigate();
+
+    const fetchRutinas = async () => {
+        const rutinasRef = await firebase.db.collection('Rutinas').get();
+        const rutinasData = rutinasRef.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setRutinas(rutinasData);
+    };
+
+    useEffect(() => {
+        fetchRutinas();
+    }, []);
 
     const formik = useFormik({
         initialValues: {
@@ -36,11 +47,11 @@ function Routine() {
             try {
                 rutina.existencia = true;
                 rutina.imagen = urlImagen;
-                console.log(rutina);
                 await firebase.db.collection('Rutinas').add(rutina);
                 alert('Rutina de ejercicio registrada exitosamente');
                 formik.resetForm();
                 navigate('/');
+                fetchRutinas();
             } catch (e) {
                 console.log(e);
             }
@@ -61,7 +72,6 @@ function Routine() {
         setSubiendo(false);
         setProgreso(100);
 
-        // Manejo de imagen
         const urlImagen = await firebase
             .storage
             .ref("Imgrutinas")
@@ -73,12 +83,11 @@ function Routine() {
 
     const handleProgress = (progreso) => {
         setProgreso(progreso);
-        console.log(progreso);
     }
 
     return (
         <>
-            <div className='flex'>
+            <div className='flex bg-gray-200'>
                 <div className="flex ml-5 mt-5 mb-5 mr-10 bg-gray-800 flex-col justify-center px-6 py-10 border border-gray-800 border-4 p-4 rounded-lg p-4">
                     <div className="sm:max-w-sm">
                         <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-200">Registrar Rutina de Ejercicio</h2>
@@ -100,7 +109,7 @@ function Routine() {
                                 />
                             </div>
                             {formik.touched.nombreRutina && formik.errors.nombreRutina ? (
-                                <div>
+                                <div className='text-gray-200'>
                                     <p>{formik.errors.nombreRutina}</p>
                                 </div>
                             ) : null}
@@ -121,7 +130,7 @@ function Routine() {
                                 />
                             </div>
                             {formik.touched.tipoEjercicio && formik.errors.tipoEjercicio ? (
-                                <div>
+                                <div className='text-gray-200'>
                                     <p>{formik.errors.tipoEjercicio}</p>
                                 </div>
                             ) : null}
@@ -142,7 +151,7 @@ function Routine() {
                                 />
                             </div>
                             {formik.touched.duracionRutina && formik.errors.duracionRutina ? (
-                                <div>
+                                <div className='text-gray-200'>
                                     <p>{formik.errors.duracionRutina}</p>
                                 </div>
                             ) : null}
@@ -155,6 +164,7 @@ function Routine() {
                                     id="imagen"
                                     name="imagen"
                                     randomizeFilename
+                                    className='text-gray-400 '
                                     storageRef={firebase.storage.ref("Imgrutinas")}
                                     onUploadStart={handleUploadStart}
                                     onUploadError={handleUploadError}
@@ -162,14 +172,14 @@ function Routine() {
                                     onProgress={handleProgress}
                                 />
                             </div>
-                            <div className="mb-4">
+                            <div className="mb-4 ">
                                 {Subiendo && (
-                                    <div>
+                                    <div className='text-green-200'>
                                         <p>Subiendo: {progreso}%</p>
                                     </div>
                                 )}
                                 {urlImagen && (
-                                    <div>
+                                    <div className='text-green-600'>
                                         <p>Imagen subida con éxito</p>
                                     </div>
                                 )}
@@ -205,7 +215,26 @@ function Routine() {
                         </form>
                     </div>
                 </div>
-                <div className=''>Info</div>
+
+                <div className="py-5 justify-center">
+                    <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Rutinas Existentes:</h2>
+                    <div className="flex flex-wrap ">
+                        {rutinas.map((rutina) => (
+                            <div key={rutina.id} className="border p-4 m-4 bg-gray-800 rounded-lg text-white mx-auto">
+                                <p className='text-xl font-semibold text-center'>Nombre de la Rutina: { rutina.nombreRutina}</p>
+                                <img
+                                    src={rutina.imagen}
+                                    alt={rutina.nombreRutina}
+                                    className="w-40 h-40 mx-auto mb-5 mt-5 border border-4 rounded-lg"
+                                />
+                                
+                                <p className="text-gray-400 text-center">Tipo de Ejercicio: {rutina.tipoEjercicio}</p>
+                                <p className="text-gray-400 text-center"> Duración de la Rutina: {rutina.duracionRutina} minutos</p>
+                                <p className="text-gray-400 text-center">Descripción: {rutina.descripcion}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </>
     );
