@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { FirebaseContext } from '../firebase';
 
-
-
-function Login( { usuarios } ) {
-
-
+function Login({ usuarios }) {
+  const { firebase } = useContext(FirebaseContext);
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
 
@@ -14,41 +12,57 @@ function Login( { usuarios } ) {
 
   const handleContrasenaChange = (e) => {
     setContrasena(e.target.value);
-    
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    const usuarioEncontrado = usuarios.find((usuario) => usuario.email === email && usuario.contrasena === contrasena);
+    try {
+      // Buscar al usuario en Firebase
+      const userSnapshot = await firebase.db
+        .collection('Clientes')
+        .where('email', '==', email)
+        .get();
 
-    if (usuarioEncontrado) {
-      alert('Inicio de sesión exitoso');
-   
-      
-    } else {
-      alert('Inicio de sesión fallido');
+      if (!userSnapshot.empty) {
+        // Usuario encontrado, verificar la contraseña
+        const user = userSnapshot.docs[0].data();
+
+        if (user.contrasena === contrasena) {
+          // Contraseña válida, inicio de sesión exitoso
+          alert('Inicio de sesión exitoso');
+        } else {
+          // Contraseña incorrecta
+          alert('Contraseña incorrecta');
+        }
+      } else {
+        // Usuario no encontrado
+        alert('Usuario no encontrado');
+      }
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+      alert('Ocurrió un error al iniciar sesión');
     }
-  
   };
 
-
-
-  
- // Crear un nuevo usuario con los datos ingresados
- 
-
-// Agregar el nuevo usuario a la lista de usuarios
-
   return (
-
-
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm ">
-      
-        <svg className="mx-auto h-10 w-auto" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
-                  </svg>
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <svg
+          className="mx-auto h-10 w-auto"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+          ></path>
+        </svg>
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Sign in to your account
         </h2>
@@ -62,7 +76,11 @@ function Login( { usuarios } ) {
             </label>
             <div className="mt-2">
               <input
-                type="email" id="email" value={email} onChange={handleEmailChange} required
+                type="email"
+                id="email"
+                value={email}
+                onChange={handleEmailChange}
+                required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-center"
               />
             </div>
@@ -81,7 +99,11 @@ function Login( { usuarios } ) {
             </div>
             <div className="mt-2">
               <input
-                type="password" id="contrasena" value={contrasena} onChange={handleContrasenaChange} required 
+                type="password"
+                id="contrasena"
+                value={contrasena}
+                onChange={handleContrasenaChange}
+                required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-center"
               />
             </div>
@@ -94,7 +116,6 @@ function Login( { usuarios } ) {
             >
               Sign in
             </button>
-   
           </div>
         </form>
 
@@ -105,11 +126,8 @@ function Login( { usuarios } ) {
           </a>
         </p>
       </div>
-     
     </div>
-
-
-  )
+  );
 }
 
-export default Login
+export default Login;
