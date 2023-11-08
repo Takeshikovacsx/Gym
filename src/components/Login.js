@@ -1,7 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { FirebaseContext } from '../firebase';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-function Login({ usuarios }) {
+
+
+
+function Login({ onLogin }) {
+  const navigate = useNavigate(); // Utiliza useNavigate para acceder a la función de navegación
   const { firebase } = useContext(FirebaseContext);
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
@@ -31,6 +37,11 @@ function Login({ usuarios }) {
         if (user.contrasena === contrasena) {
           // Contraseña válida, inicio de sesión exitoso
           alert('Inicio de sesión exitoso');
+          onLogin();
+          navigate('/Ulog')
+
+
+
         } else {
           // Contraseña incorrecta
           alert('Contraseña incorrecta');
@@ -121,9 +132,10 @@ function Login({ usuarios }) {
 
         <p className="mt-10 text-center text-sm text-gray-500">
           Not a member?{' '}
-          <a href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-            Start a 14 day free trial
-          </a>
+
+          <Link to="/Registro" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+            Resgister
+          </Link>
         </p>
       </div>
     </div>
