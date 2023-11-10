@@ -6,6 +6,8 @@ import Registro from './components/Registro';
 import Ulogueado from './components/Ulog';
 import Routine from './components/Routine';
 import Clases from './components/Clases';
+import AsignClass from './components/AsignClass';
+import AsignRoutine from './components/AsignRoutine';
 import { FaDumbbell } from 'react-icons/fa';
 import firebase, { FirebaseContext } from './firebase'
 
@@ -53,14 +55,27 @@ function App() {
                 <div class="hidden lg:flex lg:gap-x-12">
 
                   {isLoggedIn && ( // Mostrar el enlace de "Routines" solo si el usuario ha iniciado sesión
-                    <Link to="/Rout" className='text-sm font-semibold leading-6 text-white'>
-                      Routines
-                    </Link>
+                    <>
+                      <Link to="/Rout" className='text-sm font-semibold leading-6 text-white'>
+                        Register Routines
+                      </Link>
+                      <Link to="/Clase" className='text-sm font-semibold leading-6 text-white'>
+                        Register Class
+                      </Link>
+                      <Link to="/Arou" className='text-sm font-semibold leading-6 text-white'>
+                        Asign Routine
+                      </Link>
+                      <Link to="/Aclass" className='text-sm font-semibold leading-6 text-white'>
+                        Asign Class
+                      </Link>
+
+
+                    </>
+
+
                   )}
 
-                  <Link to="Clase" className='text-sm font-semibold leading-6 text-white'>
-                    Class
-                  </Link>
+
 
                   <a href="#" class="text-sm font-semibold leading-6 text-white">Schedules</a>
                   <a href="#" class="text-sm font-semibold leading-6 text-white">Marketplace</a>
@@ -72,8 +87,8 @@ function App() {
 
                   <div className='flex'>
                     {isLoggedIn ? ( // Mostrar el enlace de "Logout" cuando el usuario ha iniciado sesión
-                     
-                     <Link to="/"  onClick={handleLogout} className="bg-gray-700 hover:bg-gray-900 text-white py-2 px-4 rounded-md opacity-75 hover:opacity-100 ml-4 flex items-center">
+
+                      <Link to="/" onClick={handleLogout} className="bg-gray-700 hover:bg-gray-900 text-white py-2 px-4 rounded-md opacity-75 hover:opacity-100 ml-4 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 mr-2">
                           <path fill-rule="evenodd" d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm10.72 4.72a.75.75 0 011.06 0l3 3a.75.75 0 010 1.06l-3 3a.75.75 0 11-1.06-1.06l1.72-1.72H9a.75.75 0 010-1.5h10.94l-1.72-1.72a.75.75 0 010-1.06z" clip-rule="evenodd" />
                         </svg>
@@ -128,8 +143,10 @@ function App() {
           <Routes>
             <Route path='/' element={App} />
             <Route path='/Clase' element={<Clases />} />
+            <Route path='/Aclass' element={<AsignClass />} />
+            <Route path='/Arou' element={<AsignRoutine />} />
             <Route path='/Rout' element={<Routine />} />
-            <Route path='/Login' element={<Login onLogin={handleLogin}  />} />
+            <Route path='/Login' element={<Login onLogin={handleLogin} />} />
             <Route path='/Registro' element={<Registro />} />
             <Route path='/Ulog' element={<Ulogueado />} />
           </Routes>

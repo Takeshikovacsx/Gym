@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 const Clases = () => {
   const { firebase } = useContext(FirebaseContext);
   const [rutinas, setRutinas] = useState([]);
-  const [usuarios, setUsuarios] = useState([]);
 
   const navigate = useNavigate();
 
@@ -18,40 +17,33 @@ const Clases = () => {
       setRutinas(rutinasData);
     };
 
-    const fetchUsuarios = async () => {
-      const usuariosSnapshot = await firebase.db.collection('Clientes').get();
-      const usuariosData = usuariosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setUsuarios(usuariosData);
-    };
-
     fetchRutinas();
-    fetchUsuarios();
   }, [firebase]);
 
   const formik = useFormik({
     initialValues: {
       rutina: '',
-      usuario: '',
       fecha: new Date().toISOString().split('T')[0], // Inicializa con la fecha actual
+      hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // Inicializa con la hora actual
       nombreClase: '', // Nuevo campo para el nombre de la clase
     },
     validationSchema: Yup.object({
       rutina: Yup.string().required('Selecciona una rutina'),
-      usuario: Yup.string().required('Selecciona un usuario'),
       fecha: Yup.string().required('Selecciona una fecha'),
+      hora: Yup.string().required('Selecciona una hora'),
       nombreClase: Yup.string().required('Ingresa el nombre de la clase'), // Nueva validación
     }),
     onSubmit: async (values) => {
       try {
         const rutinaSeleccionada = rutinas.find(rutina => rutina.id === values.rutina);
-        const usuarioSeleccionado = usuarios.find(usuario => usuario.id === values.usuario);
+
+        // Combina la fecha y la hora en un objeto Date
+        const fechaHora = new Date(`${values.fecha} ${values.hora}`);
 
         await firebase.db.collection('Clases').add({
           rutinaId: values.rutina,
           rutinaNombre: rutinaSeleccionada.nombreRutina,
-          usuarioId: values.usuario,
-          usuarioNombre: usuarioSeleccionado.nombre,
-          fecha: values.fecha,
+          fecha: fechaHora,
           nombreClase: values.nombreClase, // Nuevo campo
         });
 
@@ -108,27 +100,6 @@ const Clases = () => {
         </div>
 
         <div>
-          <label htmlFor="usuario" className="block text-sm font-medium text-gray-700">
-            Selecciona un Usuario:
-          </label>
-          <select
-            id="usuario"
-            name="usuario"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.usuario}
-          >
-            <option value="" label="Selecciona un usuario" />
-            {usuarios.map(usuario => (
-              <option key={usuario.id} value={usuario.id} label={usuario.nombre} />
-            ))}
-          </select>
-          {formik.touched.usuario && formik.errors.usuario && (
-            <div className="text-red-500 text-sm">{formik.errors.usuario}</div>
-          )}
-        </div>
-
-        <div>
           <label htmlFor="fecha" className="block text-sm font-medium text-gray-700">
             Selecciona una Fecha:
           </label>
@@ -144,6 +115,24 @@ const Clases = () => {
           />
           {formik.touched.fecha && formik.errors.fecha && (
             <div className="text-red-500 text-sm">{formik.errors.fecha}</div>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="hora" className="block text-sm font-medium text-gray-700">
+            Selecciona una Hora:
+          </label>
+          <input
+            type="time"
+            id="hora"
+            name="hora"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.hora}
+            className="mt-1 p-2 w-full border rounded-md"
+          />
+          {formik.touched.hora && formik.errors.hora && (
+            <div className="text-red-500 text-sm">{formik.errors.hora}</div>
           )}
         </div>
 

@@ -1,47 +1,39 @@
-import React, { useState, useContext } from 'react';
-import { FirebaseContext } from '../firebase';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import FirebaseContext from '../context/firebase/firebaseContext';
+import firebase from '../firebase';
+import Svg, { Path } from 'react-native-svg';
 
-
-
-
-function Login({ onLogin }) {
-  const navigate = useNavigate(); // Utiliza useNavigate para acceder a la función de navegación
-  const { firebase } = useContext(FirebaseContext);
+const Login = () => {
+  const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handleEmailChange = (text) => {
+    setEmail(text);
   };
 
-  const handleContrasenaChange = (e) => {
-    setContrasena(e.target.value);
+  const handleContrasenaChange = (text) => {
+    setContrasena(text);
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
+  const handleLogin = async () => {
     try {
-      // Buscar al usuario en Firebase
       const userSnapshot = await firebase.db
         .collection('Clientes')
         .where('email', '==', email)
         .get();
-
       if (!userSnapshot.empty) {
-        // Usuario encontrado, verificar la contraseña
-        const user = userSnapshot.docs[0].data();
-
-        if (user.contrasena === contrasena) {
+        const userDoc = userSnapshot.docs[0];
+        const userData = userDoc.data();
+        if (userData.contrasena === contrasena) {
           // Contraseña válida, inicio de sesión exitoso
           alert('Inicio de sesión exitoso');
-          onLogin();
-          navigate('/Ulog')
 
-
-
+          // Llama a la función de FirebaseContext si es necesario
+          const userId = userDoc.id; // Obten el ID del cliente
+          navigation.navigate('AssignedRoutines', { userId }); // Pasa el ID como parámetro
         } else {
           // Contraseña incorrecta
           alert('Contraseña incorrecta');
@@ -57,89 +49,85 @@ function Login({ onLogin }) {
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <svg
-          className="mx-auto h-10 w-auto"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-          ></path>
-        </svg>
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Sign in to your account
-        </h2>
-      </div>
+    <View style={styles.container}>
+      <View style={styles.iconContainer}>
+        <Svg width="100" height="100" viewBox="0 0 24 24">
+          <Path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5z01 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632" fill="black" />
+        </Svg>
+      </View>
+      <Text style={styles.title}>Sign in to your account</Text>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" action="#" method="POST" onSubmit={handleLogin}>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-              Email address
-            </label>
-            <div className="mt-2">
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={handleEmailChange}
-                required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-center"
-              />
-            </div>
-          </div>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Email address</Text>
+        <TextInput
+          value={email}
+          onChangeText={handleEmailChange}
+          placeholder="Email address"
+          placeholderTextColor="gray"
+          style={styles.input}
+        />
+      </View>
 
-          <div>
-            <div className="flex items-center justify-between">
-              <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                Password
-              </label>
-              <div className="text-sm">
-                <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                  Forgot password?
-                </a>
-              </div>
-            </div>
-            <div className="mt-2">
-              <input
-                type="password"
-                id="contrasena"
-                value={contrasena}
-                onChange={handleContrasenaChange}
-                required
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-center"
-              />
-            </div>
-          </div>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          value={contrasena}
+          onChangeText={handleContrasenaChange}
+          secureTextEntry
+          placeholder="Password"
+          placeholderTextColor="gray"
+          style={styles.input}
+        />
+      </View>
 
-          <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Sign in
-            </button>
-          </div>
-        </form>
-
-        <p className="mt-10 text-center text-sm text-gray-500">
-          Not a member?{' '}
-
-          <Link to="/Registro" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-            Resgister
-          </Link>
-        </p>
-      </div>
-    </div>
+      <TouchableOpacity onPress={handleLogin} style={styles.button}>
+        <Text style={styles.buttonText}>Sign in</Text>
+      </TouchableOpacity>
+    </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: 'black',
+    marginBottom: 20,
+  },
+  inputContainer: {
+    marginTop: 20,
+  },
+  iconContainer: {
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  label: {
+    color: 'black',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    padding: 8,
+    color: 'black',
+  },
+  button: {
+    backgroundColor: 'indigo',
+    borderRadius: 4,
+    padding: 12,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+});
 
 export default Login;
