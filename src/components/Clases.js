@@ -8,8 +8,6 @@ const Clases = () => {
   const { firebase } = useContext(FirebaseContext);
   const [rutinas, setRutinas] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
-  const [selectedRoutine, setSelectedRoutine] = useState('');
-  const [selectedUser, setSelectedUser] = useState('');
 
   const navigate = useNavigate();
 
@@ -34,26 +32,27 @@ const Clases = () => {
     initialValues: {
       rutina: '',
       usuario: '',
-      fecha: '', // Cambiado a un string para el input tipo date
+      fecha: new Date().toISOString().split('T')[0], // Inicializa con la fecha actual
+      nombreClase: '', // Nuevo campo para el nombre de la clase
     },
     validationSchema: Yup.object({
       rutina: Yup.string().required('Selecciona una rutina'),
       usuario: Yup.string().required('Selecciona un usuario'),
-      fecha: Yup.string().required('Selecciona una fecha'), // Cambiado a un string
+      fecha: Yup.string().required('Selecciona una fecha'),
+      nombreClase: Yup.string().required('Ingresa el nombre de la clase'), // Nueva validación
     }),
     onSubmit: async (values) => {
       try {
-        // Obtener el nombre de la rutina y el usuario
         const rutinaSeleccionada = rutinas.find(rutina => rutina.id === values.rutina);
         const usuarioSeleccionado = usuarios.find(usuario => usuario.id === values.usuario);
 
-        // Guardar la información en la colección "Clases"
         await firebase.db.collection('Clases').add({
           rutinaId: values.rutina,
           rutinaNombre: rutinaSeleccionada.nombreRutina,
           usuarioId: values.usuario,
           usuarioNombre: usuarioSeleccionado.nombre,
           fecha: values.fecha,
+          nombreClase: values.nombreClase, // Nuevo campo
         });
 
         alert('Clase registrada exitosamente');
@@ -70,6 +69,23 @@ const Clases = () => {
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Registrar Clase</h2>
       <form onSubmit={formik.handleSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="nombreClase" className="block text-sm font-medium text-gray-700">
+            Nombre de la Clase:
+          </label>
+          <input
+            type="text"
+            id="nombreClase"
+            name="nombreClase"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.nombreClase}
+            className="mt-1 p-2 w-full border rounded-md"
+          />
+          {formik.touched.nombreClase && formik.errors.nombreClase && (
+            <div className="text-red-500 text-sm">{formik.errors.nombreClase}</div>
+          )}
+        </div>
         <div>
           <label htmlFor="rutina" className="block text-sm font-medium text-gray-700">
             Selecciona una Rutina:
@@ -124,6 +140,7 @@ const Clases = () => {
             onBlur={formik.handleBlur}
             value={formik.values.fecha}
             className="mt-1 p-2 w-full border rounded-md"
+            min={new Date().toISOString().split('T')[0]} // Establece la fecha mínima como la fecha actual
           />
           {formik.touched.fecha && formik.errors.fecha && (
             <div className="text-red-500 text-sm">{formik.errors.fecha}</div>
