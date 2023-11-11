@@ -28,8 +28,8 @@ const AsignRoutine = () => {
 
   const formik = useFormik({
     initialValues: {
-      cliente: '',
-      rutina: '',
+      clienteid: '',
+      rutinaid: '',
     },
     onSubmit: async (values) => {
       try {
@@ -48,9 +48,9 @@ const AsignRoutine = () => {
           // Obtén el nombre del cliente
           const nombreCliente = clienteData.data().nombre;
 
-          // Obtén el nombre de la rutina
+          // Obtén todos los datos de la rutina
           const rutinaRef = await firebase.db.collection('Rutinas').doc(values.rutina).get();
-          const nombreRutina = rutinaRef.data().nombreRutina;
+          const datosRutina = rutinaRef.data();
 
           // Asigna la rutina al cliente
           rutinasAsignadas.push(values.rutina);
@@ -58,11 +58,11 @@ const AsignRoutine = () => {
 
           // Guarda la asignación en una nueva colección
           await firebase.db.collection('AsignacionesRutinas').add({
-            cliente: values.cliente,
+            clienteid: values.cliente,
             nombreCliente: nombreCliente,
-            rutina: values.rutina,
-            nombreRutina: nombreRutina,
+            rutinaid: values.rutina,
             fechaAsignacion: new Date(),
+            ...datosRutina, // Agrega todos los atributos de la rutina
           });
 
           alert('Rutina asignada exitosamente al cliente.');
